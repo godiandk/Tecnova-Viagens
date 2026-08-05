@@ -6,6 +6,7 @@ import { useT, type Traduzir } from '@/lib/i18n/contexto';
 import BagagemDetalhe from '@/components/BagagemDetalhe';
 import DetalheItinerario from '@/components/DetalheItinerario';
 import MedidorSeguranca from '@/components/MedidorSeguranca';
+import OndeComprar from '@/components/OndeComprar';
 import { buscarCompanhia } from '@/lib/dados/companhias';
 import {
   CLASSES_NIVEL,
@@ -30,10 +31,16 @@ const CLASSES_SELO: Record<string, string> = {
 export default function CartaoResultado({
   resultado,
   aoSalvarCotacao,
+  simulado = true,
+  volta,
 }: {
   resultado: Resultado;
   /** Presente só na área do operador: guarda o custo real para precificar. */
   aoSalvarCotacao?: (resultado: Resultado) => void;
+  /** Com dados simulados o voo não existe: os links viram busca da rota. */
+  simulado?: boolean;
+  /** Data de volta, para os links de compra já virem com ida e volta. */
+  volta?: string;
 }) {
   const t = useT();
   const [aberto, setAberto] = useState(false);
@@ -253,6 +260,8 @@ export default function CartaoResultado({
               tranquila.
             </p>
           </section>
+
+          <OndeComprar itinerario={itinerario} simulado={simulado} volta={volta} />
         </div>
       )}
     </article>

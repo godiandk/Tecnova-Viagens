@@ -194,6 +194,8 @@ export default function AplicativoBusca({
               <CartaoResultado
                 key={resultado.itinerario.id}
                 resultado={resultado}
+                simulado={resposta.simulado}
+                volta={parametros.volta}
                 aoSalvarCotacao={
                   trecho
                     ? (r) =>

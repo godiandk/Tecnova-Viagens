@@ -36,12 +36,29 @@ export const DESCRICAO_FAIXA: Record<FaixaSeguranca, string> = {
   evitar: 'A chance de dar errado é alta e o prejuízo fica com você. Procure outra opção.',
 };
 
+/** Ícone que acompanha o nível, para quem não distingue as cores. */
+export const SIMBOLO_NIVEL: Record<NivelAlerta, string> = {
+  critico: '✕',
+  alto: '!',
+  medio: '!',
+  baixo: '·',
+  info: 'i',
+};
+
 /** Classes Tailwind por faixa: texto, fundo e borda coerentes com o tema. */
 export const CLASSES_FAIXA: Record<FaixaSeguranca, string> = {
-  seguro: 'text-seguro bg-seguro-suave border-seguro/30',
+  seguro: 'text-ok bg-ok-suave border-ok/30',
   aceitavel: 'text-atencao bg-atencao-suave border-atencao/30',
   arriscado: 'text-risco bg-risco-suave border-risco/30',
   evitar: 'text-perigo bg-perigo-suave border-perigo/30',
+};
+
+/** Variável CSS da cor de cada faixa, para desenhar o medidor em SVG. */
+export const COR_FAIXA: Record<FaixaSeguranca, string> = {
+  seguro: 'var(--ok)',
+  aceitavel: 'var(--atencao)',
+  arriscado: 'var(--risco)',
+  evitar: 'var(--perigo)',
 };
 
 export const ROTULO_NIVEL: Record<NivelAlerta, string> = {

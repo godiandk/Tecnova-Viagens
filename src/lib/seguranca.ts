@@ -164,6 +164,11 @@ export function analisarSeguranca(
   if (itinerario.bilhetes.length > 1) {
     alertas.push({
       codigo: 'BILHETES_SEPARADOS',
+      simples:
+        `São ${itinerario.bilhetes.length} passagens diferentes, não uma passagem só. Se o primeiro ` +
+        'avião atrasar e você perder o próximo, a empresa NÃO te coloca em outro voo. Você vai ' +
+        'ter que comprar outra passagem com o seu dinheiro. E a sua mala não vai sozinha: você ' +
+        'precisa pegar ela na esteira e despachar de novo.',
       nivel: 'critico',
       titulo: `Viagem vendida em ${itinerario.bilhetes.length} bilhetes separados`,
       detalhe:
@@ -183,6 +188,10 @@ export function analisarSeguranca(
       const pior = apertadas[0];
       alertas.push({
         codigo: 'AUTOCONEXAO_APERTADA',
+        simples:
+          `Você tem ${formatarDuracao(pior.esperaMin)} para descer do avião, pegar a mala, fazer ` +
+          'um novo check-in, despachar de novo e passar pela segurança outra vez. É pouco tempo. ' +
+          'Se der errado, ninguém segura o segundo avião esperando por você.',
         nivel: 'critico',
         titulo: 'Margem curta demais entre bilhetes',
         detalhe:
@@ -208,6 +217,11 @@ export function analisarSeguranca(
     if (conexao.trocaAeroporto) {
       alertas.push({
         codigo: 'TROCA_AEROPORTO',
+        simples:
+          `Você desce no aeroporto ${conexao.aeroportoChegada} e precisa ir até o aeroporto ` +
+          `${conexao.aeroportoPartida}, que é outro lugar da cidade. Você vai de carro ou ônibus, ` +
+          'pagando do seu bolso, carregando as malas. Se pegar trânsito e você perder o voo, o ' +
+          'prejuízo é seu.',
         nivel: 'critico',
         titulo: `Conexão troca de aeroporto: ${conexao.aeroportoChegada} → ${conexao.aeroportoPartida}`,
         detalhe:
@@ -218,6 +232,9 @@ export function analisarSeguranca(
     } else if (conexao.esperaMin < conexao.mctMin && conexao.mesmoBilhete) {
       alertas.push({
         codigo: 'CONEXAO_ABAIXO_DO_MINIMO',
+        simples:
+          `Você tem só ${formatarDuracao(conexao.esperaMin)} para trocar de avião em ${onde}. ` +
+          'Isso é pouco demais. Se o primeiro voo atrasar um pouquinho, você perde o segundo.',
         nivel: 'critico',
         titulo: `Conexão de ${formatarDuracao(conexao.esperaMin)} em ${onde}`,
         detalhe:
@@ -234,6 +251,10 @@ export function analisarSeguranca(
     } else if (conexao.esperaMin < conexao.mctMin + 25 && conexao.mesmoBilhete) {
       alertas.push({
         codigo: 'CONEXAO_JUSTA',
+        simples:
+          `Você tem ${formatarDuracao(conexao.esperaMin)} para trocar de avião em ${onde}. Dá, mas ` +
+          'é apertado. A boa notícia: como é tudo uma passagem só, se você perder por causa de ' +
+          'atraso, a empresa é obrigada a te colocar em outro voo sem cobrar nada.',
         nivel: 'alto',
         titulo: `Conexão justa de ${formatarDuracao(conexao.esperaMin)} em ${onde}`,
         detalhe:
@@ -246,6 +267,10 @@ export function analisarSeguranca(
     if (conexao.esperaMin >= CONEXAO_MUITO_LONGA_MIN) {
       alertas.push({
         codigo: 'CONEXAO_MUITO_LONGA',
+        simples:
+        `Você vai ficar ${formatarDuracao(conexao.esperaMin)} parado em ${onde} esperando o ` +
+        'próximo avião. É tempo de precisar de um hotel ou dormir no aeroporto. Isso cansa e ' +
+        'custa dinheiro.',
         nivel: 'medio',
         titulo: `Espera de ${formatarDuracao(conexao.esperaMin)} em ${onde}`,
         detalhe:
@@ -256,6 +281,9 @@ export function analisarSeguranca(
     } else if (conexao.esperaMin >= CONEXAO_LONGA_MIN) {
       alertas.push({
         codigo: 'CONEXAO_LONGA',
+        simples:
+        `Você vai esperar ${formatarDuracao(conexao.esperaMin)} em ${onde} até o próximo avião. ` +
+        'É bastante tempo parado, mas pelo menos você não corre risco de perder o voo.',
         nivel: 'baixo',
         titulo: `Espera de ${formatarDuracao(conexao.esperaMin)} em ${onde}`,
         detalhe: 'Conexão folgada: seguro contra atrasos, mas cansativo.',
@@ -269,6 +297,10 @@ export function analisarSeguranca(
     ) {
       alertas.push({
         codigo: 'CONEXAO_NOTURNA',
+        simples:
+        `O segundo avião sai às ${horaLocal(conexao.proximo.partida)}, já de noite. Costuma ser um ` +
+        'dos últimos voos do dia. Se você perder, provavelmente vai ter que dormir nessa cidade ' +
+        'e viajar só no dia seguinte.',
         nivel: 'medio',
         titulo: `Conexão embarca às ${horaLocal(conexao.proximo.partida)} em ${onde}`,
         detalhe:
@@ -283,6 +315,7 @@ export function analisarSeguranca(
     for (const regra of regrasParaConexao(pais, opcoes.nacionalidade)) {
       alertas.push({
         codigo: `VISTO_TRANSITO_${regra.paisIso}`,
+        simples: regra.simples,
         nivel: regra.nivel,
         titulo: regra.titulo,
         detalhe: `${regra.detalhe} Confirme na fonte oficial: ${regra.fonte}`,
@@ -295,6 +328,10 @@ export function analisarSeguranca(
   if (itinerario.paradas > 0) {
     alertas.push({
       codigo: 'PARADAS',
+      simples:
+        `Esta viagem não é direta: você troca de avião ${itinerario.paradas} ` +
+        `${itinerario.paradas === 1 ? 'vez' : 'vezes'}. Cada troca é uma chance a mais de atrasar ` +
+        'ou da mala se perder. Voo direto é sempre o mais tranquilo.',
       nivel: itinerario.paradas >= 2 ? 'medio' : 'baixo',
       titulo: `${itinerario.paradas} ${itinerario.paradas === 1 ? 'parada' : 'paradas'} no caminho`,
       detalhe:
@@ -311,6 +348,10 @@ export function analisarSeguranca(
   if (horaDoDia(ultimo.chegada) >= MADRUGADA.inicio && horaDoDia(ultimo.chegada) < MADRUGADA.fim) {
     alertas.push({
       codigo: 'CHEGADA_MADRUGADA',
+      simples:
+        `Seu avião chega às ${horaLocal(ultimo.chegada)} da madrugada. Nesse horário quase não tem ` +
+        'ônibus nem metrô, e o carro de aplicativo fica bem mais caro. Pense em como você vai ' +
+        'do aeroporto até onde vai ficar.',
       nivel: 'baixo',
       titulo: `Chegada às ${horaLocal(ultimo.chegada)}`,
       detalhe:
@@ -326,6 +367,10 @@ export function analisarSeguranca(
   ) {
     alertas.push({
       codigo: 'PARTIDA_MADRUGADA',
+      simples:
+        `Seu avião sai às ${horaLocal(primeiro.partida)} da madrugada. Você precisa chegar no ` +
+        'aeroporto antes disso, de madrugada. Muita gente acaba tendo que sair de casa na noite ' +
+        'anterior ou pagar caro no transporte.',
       nivel: 'baixo',
       titulo: `Embarque às ${horaLocal(primeiro.partida)}`,
       detalhe:
@@ -340,6 +385,9 @@ export function analisarSeguranca(
   if (semRemarcacao > 0) {
     alertas.push({
       codigo: 'NAO_REMARCAVEL',
+      simples:
+        'Se você precisar mudar a data da viagem, não dá — ou vai custar quase o preço de uma ' +
+        'passagem nova. Só compre esta se a sua data já estiver certa.',
       nivel: 'medio',
       titulo: 'Tarifa sem direito a remarcação',
       detalhe:
@@ -353,6 +401,8 @@ export function analisarSeguranca(
   if (semReembolso > 0) {
     alertas.push({
       codigo: 'NAO_REEMBOLSAVEL',
+      simples:
+        'Se você desistir da viagem, o dinheiro não volta. Você perde o valor que pagou.',
       nivel: 'baixo',
       titulo: 'Tarifa não reembolsável',
       detalhe: 'Desistindo da viagem, você não recebe o valor de volta (só taxas, em alguns casos).',
@@ -364,6 +414,9 @@ export function analisarSeguranca(
   if (semBagagem > 0) {
     alertas.push({
       codigo: 'SEM_BAGAGEM_DESPACHADA',
+      simples:
+        'O preço que aparece é só com a mala pequena, aquela que vai com você dentro do avião. ' +
+        'A mala grande, que vai no bagageiro, você paga separado. Veja quanto custa logo abaixo.',
       nivel: 'info',
       titulo: 'Bagagem despachada não inclusa',
       detalhe:
@@ -385,6 +438,10 @@ export function analisarSeguranca(
     if (pontos > 0) {
       alertas.push({
         codigo: 'PONTUALIDADE',
+        simples:
+          `A ${pior.nome} atrasa mais que as outras: cerca de ` +
+          `${Math.round((1 - pior.pontualidade) * 100)} de cada 100 voos não saem na hora. Se a ` +
+          'sua conexão for apertada, isso aumenta a chance de você perder o voo seguinte.',
         nivel: pontos >= 8 ? 'medio' : 'baixo',
         titulo: `${pior.nome} tem histórico de pontualidade abaixo da média`,
         detalhe:
@@ -403,6 +460,10 @@ export function analisarSeguranca(
   ) {
     alertas.push({
       codigo: 'PRECO_SUSPEITO',
+      simples:
+        'Esta passagem está bem mais barata que todas as outras desta busca. Quando isso ' +
+        'acontece, quase sempre tem um porquê escondido: mala cobrada à parte, horário ruim, ' +
+        'espera enorme ou regra que não deixa mudar nada. Leia com atenção antes de comprar.',
       nivel: 'medio',
       titulo: 'Preço muito abaixo dos demais',
       detalhe:

@@ -5,6 +5,7 @@ import BalancaPrecoSeguranca from '@/components/BalancaPrecoSeguranca';
 import CartaoResultado from '@/components/CartaoResultado';
 import FormularioBusca from '@/components/FormularioBusca';
 import { PESO_SEGURANCA_PADRAO } from '@/lib/config';
+import { cotacaoDeResultado, salvarCotacao } from '@/lib/cotacoes';
 import { dataPorExtenso, moeda } from '@/lib/formato';
 import { montarResultados } from '@/lib/ranking';
 import type { ParametrosBusca, RespostaBusca } from '@/lib/tipos';
@@ -163,7 +164,7 @@ export default function AplicativoBusca({
                   onClick={() => setTrechoAtivo(indice)}
                   className={`rounded-lg border px-4 py-2 text-sm font-medium transition ${
                     indice === trechoAtivo
-                      ? 'border-marca bg-marca text-white'
+                      ? 'border-marca bg-marca text-marca-contraste'
                       : 'border-borda bg-superficie text-suave'
                   }`}
                 >
@@ -190,7 +191,22 @@ export default function AplicativoBusca({
 
           <div className="space-y-4">
             {resultadosOrdenados.map((resultado) => (
-              <CartaoResultado key={resultado.itinerario.id} resultado={resultado} />
+              <CartaoResultado
+                key={resultado.itinerario.id}
+                resultado={resultado}
+                aoSalvarCotacao={
+                  trecho
+                    ? (r) =>
+                        salvarCotacao(
+                          cotacaoDeResultado(
+                            r,
+                            trecho.data,
+                            parametros.passageiros.adultos + parametros.passageiros.criancas,
+                          ),
+                        )
+                    : undefined
+                }
+              />
             ))}
           </div>
 

@@ -21,6 +21,8 @@ export type RegraTransito = {
   nivel: NivelAlerta;
   titulo: string;
   detalhe: string;
+  /** A mesma regra em palavras do dia a dia. */
+  simples: string;
   fonte: string;
 };
 
@@ -35,6 +37,10 @@ export const REGRAS_TRANSITO: RegraTransito[] = [
       'Os EUA não têm trânsito sem visto. Mesmo só trocando de avião e sem sair do aeroporto, ' +
       'é preciso visto de trânsito (C-1) ou de turismo (B1/B2) válido. Sem ele, a companhia ' +
       'nega o embarque no Brasil e a passagem é perdida.',
+    simples:
+      'O avião faz uma parada nos Estados Unidos. Mesmo que você não saia do aeroporto, o ' +
+      'governo americano exige visto. Sem o visto no passaporte, a companhia NÃO deixa você ' +
+      'embarcar aqui no Brasil, e você perde a passagem.',
     fonte: 'https://br.usembassy.gov/pt/vistos/',
   },
   {
@@ -47,6 +53,10 @@ export const REGRAS_TRANSITO: RegraTransito[] = [
       'Trânsito aéreo pelo Canadá exige autorização prévia. Brasileiros podem se qualificar ' +
       'para a eTA (mais simples) em algumas condições; fora delas, é necessário visto de ' +
       'visitante. Confirme antes de comprar.',
+    simples:
+      'O avião faz uma parada no Canadá. Para isso você precisa pedir uma autorização antes de ' +
+      'viajar (chamada eTA) ou até um visto, dependendo do seu caso. Resolva isso ANTES de ' +
+      'comprar a passagem.',
     fonte: 'https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada.html',
   },
   {
@@ -58,6 +68,9 @@ export const REGRAS_TRANSITO: RegraTransito[] = [
     detalhe:
       'A Austrália normalmente exige visto de trânsito mesmo para quem apenas troca de voo. ' +
       'Verifique qual subclasse se aplica ao seu caso.',
+    simples:
+      'O avião faz uma parada na Austrália. Lá, normalmente é preciso visto até para quem só ' +
+      'troca de avião. Confira antes de comprar.',
     fonte: 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/transit-771',
   },
   {
@@ -70,6 +83,10 @@ export const REGRAS_TRANSITO: RegraTransito[] = [
       'Brasileiros costumam poder transitar sem visto quando permanecem na área restrita e não ' +
       'passam pelo controle de fronteira. Se a conexão exige retirar a bagagem, trocar de ' +
       'aeroporto ou passar pela imigração, as regras mudam e pode ser exigida autorização.',
+    simples:
+      'O avião faz uma parada no Reino Unido. Se você ficar só na área de embarque, sem passar ' +
+      'pela imigração, normalmente não precisa de visto. Mas se precisar pegar a mala, trocar de ' +
+      'aeroporto ou passar na imigração, a regra muda. Confira o seu caso.',
     fonte: 'https://www.gov.uk/transit-visa',
   },
   {
@@ -81,6 +98,9 @@ export const REGRAS_TRANSITO: RegraTransito[] = [
     detalhe:
       'O trânsito internacional direto normalmente dispensa visto, mas conexões que passam pela ' +
       'imigração exigem verificação prévia.',
+    simples:
+      'O avião faz uma parada na África do Sul. Se for só trocar de avião, normalmente não ' +
+      'precisa de visto. Se passar pela imigração, confira antes.',
     fonte: 'http://www.dha.gov.za/index.php/immigration-services/types-of-visa',
   },
 ];

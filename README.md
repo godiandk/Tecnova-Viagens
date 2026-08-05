@@ -194,10 +194,36 @@ Coisas que o projeto **não** faz, e que você deve saber antes de confiar nele:
   alerta de bilhetes separados. Isso é fiel à realidade: quem vende autoconexão são agregadores que
   montam bilhetes avulsos.
 
+## Linguagem simples
+
+Cada alerta carrega dois textos: `detalhe`, técnico, e `simples`, escrito em segunda pessoa com
+frases curtas e consequências concretas ("você tem só 27 minutos para trocar de avião; se o primeiro
+voo atrasar um pouquinho, você perde o segundo"). A interface principal mostra o `simples`; o
+técnico fica atrás de um clique.
+
+Além disso, cada opção abre com um **veredito de uma frase** — "Pode comprar tranquilo", "Cuidado com
+essa", "Melhor não comprar essa" — porque uma nota de 0 a 100 não diz a ninguém o que fazer. A página
+traz ainda um guia de três passos e um glossário dos termos que aparecem.
+
+## Painel de revenda (área interna)
+
+Em `/painel` (ou `#painel` na versão de página única) há uma calculadora de repasse. Ela parte do
+**custo real** da passagem — não do preço anunciado — e desconta a taxa do meio de pagamento, que é
+o que separa a margem nominal da que sobra de verdade: 15% de margem com 4,99% de maquininha viram
+8,1% no bolso. Também resolve o caminho inverso: qual margem cobrar para sobrar um lucro alvo.
+
+As cotações salvas ficam no `localStorage` do navegador — são dados comerciais do operador e não há
+motivo para trafegarem. A consequência é que a lista é por dispositivo.
+
+> Revender passagem no Brasil exige estar regularizado como agência ou operar sob uma consolidadora
+> credenciada. Bilhete aéreo é nominal e intransferível: comprar no varejo e repassar não funciona.
+> O painel calcula margens; a regularização é por sua conta.
+
 ## Testes
 
-96 testes cobrindo o motor de risco, o ranking, a validação, a aritmética de horários e o provedor
-simulado — incluindo regressões para os dois casos que a normalização de preço errava.
+106 testes cobrindo o motor de risco, o ranking, a validação, a aritmética de horários, o provedor
+simulado e o cálculo de repasse — incluindo regressões para os dois casos que a normalização de
+preço errava.
 
 ```bash
 npm test

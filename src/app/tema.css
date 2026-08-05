@@ -1,50 +1,119 @@
 /**
- * Paleta em duas camadas: variáveis semânticas em :root (com variante escura)
- * e o mapeamento para tokens do Tailwind logo abaixo. Componentes usam só os
- * nomes semânticos — trocar o tema é mexer em um lugar só.
+ * Identidade visual: o vocabulário do documento de voo.
+ *
+ * Neutros frios de papel de bilhete, marca em azul-marinho de aviação, e as
+ * cores de risco (verde/âmbar/laranja/vermelho) deliberadamente separadas da
+ * marca — assim "seguro" nunca se confunde com "botão".
+ *
+ * Os tokens são definidos três vezes: no claro, sob prefers-color-scheme e sob
+ * data-theme. O último é o que o leitor força pelo botão de tema, e por isso
+ * precisa vencer a media query nos dois sentidos.
  */
-:root {
-  --fundo: #f6f7f9;
-  --superficie: #ffffff;
-  --superficie-2: #f0f2f5;
-  --borda: #dfe3e8;
-  --texto: #14181f;
-  --suave: #5b6472;
-  --marca: #0f6f6c;
-  --marca-forte: #0b514f;
-  --marca-suave: #e3f2f1;
 
-  --seguro: #12855f;
-  --seguro-suave: #e2f4ec;
-  --atencao: #9a6700;
-  --atencao-suave: #fdf3d8;
-  --risco: #b3541e;
-  --risco-suave: #fceee2;
-  --perigo: #b02a2a;
-  --perigo-suave: #fbe9e9;
+:root {
+  --fundo: #eceff3;
+  --superficie: #ffffff;
+  --superficie-2: #f4f6f9;
+  --borda: #d8dee6;
+  --borda-forte: #b9c3cf;
+
+  --texto: #0e141c;
+  --suave: #55606e;
+  --tenue: #7c8794;
+
+  --marca: #17395c;
+  --marca-forte: #0f2740;
+  --marca-suave: #e4ebf3;
+  --marca-contraste: #ffffff;
+
+  --ok: #0f7a50;
+  --ok-suave: #e1f3ea;
+  --atencao: #8a6206;
+  --atencao-suave: #fbf0d6;
+  --risco: #a9500f;
+  --risco-suave: #fbebde;
+  --perigo: #a32320;
+  --perigo-suave: #fae6e5;
+
+  --sombra: 0 1px 2px rgb(14 20 28 / 0.06), 0 4px 16px rgb(14 20 28 / 0.05);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --fundo: #0d1117;
-    --superficie: #151b23;
-    --superficie-2: #1c232d;
-    --borda: #2a323d;
-    --texto: #e8edf4;
-    --suave: #9aa5b4;
-    --marca: #3fbdb3;
-    --marca-forte: #63d5cb;
-    --marca-suave: #12302f;
+    --fundo: #0b1017;
+    --superficie: #131a24;
+    --superficie-2: #1a222e;
+    --borda: #27313f;
+    --borda-forte: #3a4655;
 
-    --seguro: #46c78d;
-    --seguro-suave: #102b21;
-    --atencao: #e0b341;
-    --atencao-suave: #2e2611;
+    --texto: #e9eef5;
+    --suave: #9ba7b6;
+    --tenue: #7a8697;
+
+    --marca: #3b82c4;
+    --marca-forte: #5ca0dc;
+    --marca-suave: #142434;
+    --marca-contraste: #08121c;
+
+    --ok: #3fbe87;
+    --ok-suave: #0d2b20;
+    --atencao: #dcae45;
+    --atencao-suave: #2b2410;
     --risco: #e8925a;
-    --risco-suave: #2f2016;
+    --risco-suave: #2e1f15;
     --perigo: #f0736f;
-    --perigo-suave: #331919;
+    --perigo-suave: #2f1918;
+
+    --sombra: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
   }
+}
+
+:root[data-theme='light'] {
+  --fundo: #eceff3;
+  --superficie: #ffffff;
+  --superficie-2: #f4f6f9;
+  --borda: #d8dee6;
+  --borda-forte: #b9c3cf;
+  --texto: #0e141c;
+  --suave: #55606e;
+  --tenue: #7c8794;
+  --marca: #17395c;
+  --marca-forte: #0f2740;
+  --marca-suave: #e4ebf3;
+  --marca-contraste: #ffffff;
+  --ok: #0f7a50;
+  --ok-suave: #e1f3ea;
+  --atencao: #8a6206;
+  --atencao-suave: #fbf0d6;
+  --risco: #a9500f;
+  --risco-suave: #fbebde;
+  --perigo: #a32320;
+  --perigo-suave: #fae6e5;
+  --sombra: 0 1px 2px rgb(14 20 28 / 0.06), 0 4px 16px rgb(14 20 28 / 0.05);
+}
+
+:root[data-theme='dark'] {
+  --fundo: #0b1017;
+  --superficie: #131a24;
+  --superficie-2: #1a222e;
+  --borda: #27313f;
+  --borda-forte: #3a4655;
+  --texto: #e9eef5;
+  --suave: #9ba7b6;
+  --tenue: #7a8697;
+  --marca: #3b82c4;
+  --marca-forte: #5ca0dc;
+  --marca-suave: #142434;
+  --marca-contraste: #08121c;
+  --ok: #3fbe87;
+  --ok-suave: #0d2b20;
+  --atencao: #dcae45;
+  --atencao-suave: #2b2410;
+  --risco: #e8925a;
+  --risco-suave: #2e1f15;
+  --perigo: #f0736f;
+  --perigo-suave: #2f1918;
+  --sombra: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
 }
 
 @theme inline {
@@ -52,19 +121,29 @@
   --color-superficie: var(--superficie);
   --color-superficie-2: var(--superficie-2);
   --color-borda: var(--borda);
+  --color-borda-forte: var(--borda-forte);
   --color-texto: var(--texto);
   --color-suave: var(--suave);
+  --color-tenue: var(--tenue);
   --color-marca: var(--marca);
   --color-marca-forte: var(--marca-forte);
   --color-marca-suave: var(--marca-suave);
-  --color-seguro: var(--seguro);
-  --color-seguro-suave: var(--seguro-suave);
+  --color-marca-contraste: var(--marca-contraste);
+  --color-ok: var(--ok);
+  --color-ok-suave: var(--ok-suave);
   --color-atencao: var(--atencao);
   --color-atencao-suave: var(--atencao-suave);
   --color-risco: var(--risco);
   --color-risco-suave: var(--risco-suave);
   --color-perigo: var(--perigo);
   --color-perigo-suave: var(--perigo-suave);
+
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Horário, código de aeroporto, número de voo e dinheiro são dados de
+     bilhete: monoespaçados, como no painel de embarque. */
+  --font-mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono', 'Roboto Mono', Menlo, Consolas,
+    monospace;
 }
 
 html {
@@ -74,51 +153,120 @@ html {
 body {
   background: var(--fundo);
   color: var(--texto);
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-/* Foco visível e consistente em todos os controles. */
-:where(a, button, input, select, [tabindex]):focus-visible {
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+  letter-spacing: -0.022em;
+}
+
+/* Dados de voo alinham em coluna; dígitos de larguras diferentes dançam. */
+.dado {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rótulo curto de formulário e de seção. */
+.etiqueta {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+:where(a, button, input, select, summary, [tabindex]):focus-visible {
   outline: 2px solid var(--marca);
   outline-offset: 2px;
   border-radius: 6px;
 }
 
-/* Slider da balança preço x segurança. */
+/* ------------------------------------------------------------------ *
+ * Picote do cartão de embarque                                        *
+ * ------------------------------------------------------------------ *
+ * Separa o corpo do bilhete do canhoto. Os dois círculos são recortes:
+ * pintam-se com a cor do fundo da página para parecerem furos no papel.
+ * No celular o canhoto cai para baixo, então o picote vira horizontal.  */
+.picote {
+  position: relative;
+  border-top: 1.5px dashed var(--borda-forte);
+}
+
+.picote::before,
+.picote::after {
+  content: '';
+  position: absolute;
+  top: -9px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--fundo);
+}
+
+.picote::before {
+  left: -9px;
+}
+
+.picote::after {
+  right: -9px;
+}
+
+@media (min-width: 640px) {
+  .picote {
+    border-top: 0;
+    border-left: 1.5px dashed var(--borda-forte);
+  }
+
+  .picote::before,
+  .picote::after {
+    top: auto;
+    right: auto;
+    left: -9px;
+  }
+
+  .picote::before {
+    top: -9px;
+  }
+
+  .picote::after {
+    bottom: -9px;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Balança preço x segurança                                           *
+ * ------------------------------------------------------------------ */
 input[type='range'] {
   appearance: none;
   width: 100%;
-  height: 6px;
+  height: 8px;
   border-radius: 999px;
-  background: linear-gradient(to right, var(--risco), var(--atencao), var(--seguro));
+  background: linear-gradient(to right, var(--risco), var(--atencao), var(--ok));
+  border: 1px solid var(--borda);
 }
 
 input[type='range']::-webkit-slider-thumb {
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--superficie);
   border: 3px solid var(--marca);
   cursor: grab;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+  box-shadow: var(--sombra);
 }
 
 input[type='range']::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--superficie);
   border: 3px solid var(--marca);
   cursor: grab;
+  box-shadow: var(--sombra);
 }
 
 @media (prefers-reduced-motion: reduce) {

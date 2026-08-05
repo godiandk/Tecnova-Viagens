@@ -52,7 +52,7 @@ export default function FormularioBusca({ parametros, aoMudar, aoEnviar, carrega
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_auto_1fr_auto]">
         <CampoAeroporto
-          rotulo="Saindo de"
+          rotulo="De onde você sai"
           valor={parametros.origem}
           aoMudar={(iata) => aoMudar({ origem: iata })}
         />
@@ -78,7 +78,7 @@ export default function FormularioBusca({ parametros, aoMudar, aoEnviar, carrega
         </div>
 
         <CampoAeroporto
-          rotulo="Indo para"
+          rotulo="Para onde você vai"
           valor={parametros.destino}
           aoMudar={(iata) => aoMudar({ destino: iata })}
         />
@@ -87,7 +87,7 @@ export default function FormularioBusca({ parametros, aoMudar, aoEnviar, carrega
           <button
             type="submit"
             disabled={carregando}
-            className="h-[46px] w-full rounded-lg bg-marca px-6 font-semibold text-white transition hover:bg-marca-forte disabled:opacity-60 lg:w-auto"
+            className="h-[46px] w-full rounded-lg bg-marca px-6 font-bold text-marca-contraste transition hover:bg-marca-forte disabled:opacity-60 lg:w-auto"
           >
             {carregando ? 'Buscando…' : 'Buscar'}
           </button>
@@ -96,8 +96,8 @@ export default function FormularioBusca({ parametros, aoMudar, aoEnviar, carrega
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label htmlFor={idIda} className="mb-1 block text-sm font-medium text-suave">
-            Ida
+          <label htmlFor={idIda} className="mb-1 block text-sm font-semibold text-suave">
+            Dia da ida
           </label>
           <input
             id={idIda}
@@ -110,8 +110,8 @@ export default function FormularioBusca({ parametros, aoMudar, aoEnviar, carrega
         </div>
 
         <div>
-          <label htmlFor={idVolta} className="mb-1 block text-sm font-medium text-suave">
-            Volta
+          <label htmlFor={idVolta} className="mb-1 block text-sm font-semibold text-suave">
+            Dia da volta
           </label>
           <input
             id={idVolta}
@@ -129,7 +129,7 @@ export default function FormularioBusca({ parametros, aoMudar, aoEnviar, carrega
               onChange={(e) => alternarSomenteIda(e.target.checked)}
               className="accent-[var(--marca)]"
             />
-            Somente ida
+            Vou só de ida (não volto de avião)
           </label>
         </div>
 
@@ -183,7 +183,7 @@ export default function FormularioBusca({ parametros, aoMudar, aoEnviar, carrega
               </option>
             ))}
           </select>
-          <p className="mt-1.5 text-xs text-suave">Usado para checar visto de trânsito.</p>
+          <p className="mt-1.5 text-xs text-suave">Serve para avisar se algum país da viagem exige visto.</p>
         </div>
       </div>
 
@@ -193,7 +193,7 @@ export default function FormularioBusca({ parametros, aoMudar, aoEnviar, carrega
         aria-expanded={filtrosAbertos}
         className="mt-4 text-sm font-medium text-marca"
       >
-        {filtrosAbertos ? '− Ocultar filtros' : '+ Filtros de segurança'}
+        {filtrosAbertos ? '− Esconder essas opções' : '+ Mostrar mais opções'}
       </button>
 
       {filtrosAbertos && (
@@ -206,9 +206,9 @@ export default function FormularioBusca({ parametros, aoMudar, aoEnviar, carrega
               className="mt-0.5 accent-[var(--marca)]"
             />
             <span>
-              <span className="font-medium text-texto">Só bilhete único</span>
+              <span className="font-semibold text-texto">Só passagem única</span>
               <span className="block text-xs text-suave">
-                Esconde autoconexões, onde perder um voo não dá direito a reacomodação.
+                Esconde as viagens vendidas em duas passagens separadas.
               </span>
             </span>
           </label>
@@ -221,9 +221,9 @@ export default function FormularioBusca({ parametros, aoMudar, aoEnviar, carrega
               className="mt-0.5 accent-[var(--marca)]"
             />
             <span>
-              <span className="font-medium text-texto">Com bagagem despachada</span>
+              <span className="font-semibold text-texto">Com mala grande incluída</span>
               <span className="block text-xs text-suave">
-                Só tarifas que já incluem mala no porão.
+                Só passagens que já vêm com mala para despachar.
               </span>
             </span>
           </label>

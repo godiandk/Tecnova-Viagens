@@ -77,15 +77,27 @@ export default function DetalheItinerario({ itinerario }: { itinerario: Itinerar
         </div>
       ))}
 
-      <dl className="grid gap-x-6 gap-y-1 border-t border-borda pt-3 text-sm sm:grid-cols-2">
-        {itinerario.bilhetes.map((bilhete) => (
-          <div key={`cond-${bilhete.id}`} className="flex flex-wrap gap-x-3 text-suave">
-            <span>{bilhete.bagagemDespachada ? '✓ Bagagem despachada' : '✕ Sem bagagem no porão'}</span>
-            <span>{bilhete.remarcavel ? '✓ Remarcável' : '✕ Sem remarcação'}</span>
-            <span>{bilhete.reembolsavel ? '✓ Reembolsável' : '✕ Sem reembolso'}</span>
-          </div>
-        ))}
-      </dl>
+      {/* A bagagem tem seção própria; aqui ficam só as regras da tarifa. */}
+      <div className="border-t border-borda pt-3">
+        <p className="etiqueta mb-1.5 text-tenue">Regras desta passagem</p>
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          {itinerario.bilhetes.map((bilhete, indice) => (
+            <div key={`cond-${bilhete.id}`} className="flex flex-wrap gap-x-4 text-suave">
+              {itinerario.bilhetes.length > 1 && (
+                <span className="font-semibold text-texto">Passagem {indice + 1}:</span>
+              )}
+              <span className={bilhete.remarcavel ? 'text-ok' : 'text-atencao'}>
+                {bilhete.remarcavel ? '✓ dá para mudar a data' : '✕ não dá para mudar a data'}
+              </span>
+              <span className={bilhete.reembolsavel ? 'text-ok' : 'text-atencao'}>
+                {bilhete.reembolsavel
+                  ? '✓ dá para cancelar e receber de volta'
+                  : '✕ desistiu, perdeu o dinheiro'}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -103,7 +115,7 @@ function LinhaVoo({ segmento }: { segmento: Segmento }) {
 
       <div className="flex-1 pb-1">
         <div className="flex flex-wrap items-baseline gap-x-2">
-          <span className="font-mono font-semibold text-texto">{horaLocal(segmento.partida)}</span>
+          <span className="dado font-semibold text-texto">{horaLocal(segmento.partida)}</span>
           <span className="text-sm text-texto">{rotuloAeroporto(segmento.origem)}</span>
         </div>
 
@@ -123,7 +135,7 @@ function LinhaVoo({ segmento }: { segmento: Segmento }) {
         </div>
 
         <div className="flex flex-wrap items-baseline gap-x-2">
-          <span className="font-mono font-semibold text-texto">{horaLocal(segmento.chegada)}</span>
+          <span className="dado font-semibold text-texto">{horaLocal(segmento.chegada)}</span>
           <span className="text-sm text-texto">{rotuloAeroporto(segmento.destino)}</span>
         </div>
       </div>
@@ -156,16 +168,15 @@ function LinhaConexao({
 
   return (
     <div className={`my-2 ml-6 rounded-lg border px-3 py-2 text-xs ${classe}`}>
-      <span className="font-semibold">
-        Conexão de {formatarDuracao(esperaMin)} em {aeroporto}
-        {aeroportoSaida && ` — embarque em ${aeroportoSaida}`}
+      <span className="font-bold">
+        Espera de {formatarDuracao(esperaMin)} em {aeroporto} para trocar de avião
+        {aeroportoSaida && ` — e o próximo voo sai de ${aeroportoSaida}`}
       </span>
-      <span className="block">
-        Mínimo recomendado aqui: {formatarDuracao(mctMin)}
-        {entreBilhetes && ' (bilhetes separados exigem novo check-in)'}
+      <span className="mt-0.5 block">
         {critico
-          ? ` — faltam ${formatarDuracao(-margem)}.`
-          : ` — sobra ${formatarDuracao(margem)} de folga.`}
+          ? `Faltam ${formatarDuracao(-margem)}: o recomendado aqui é ${formatarDuracao(mctMin)}.`
+          : `Sobra ${formatarDuracao(margem)} além do recomendado (${formatarDuracao(mctMin)}).`}
+        {entreBilhetes && ' Como são passagens separadas, você refaz o check-in e despacha a mala de novo.'}
       </span>
     </div>
   );

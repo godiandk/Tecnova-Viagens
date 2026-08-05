@@ -80,7 +80,14 @@ export type Alerta = {
   codigo: string;
   nivel: NivelAlerta;
   titulo: string;
+  /** Explicação técnica, para quem já conhece o vocabulário de aviação. */
   detalhe: string;
+  /**
+   * A mesma coisa em palavras do dia a dia, em segunda pessoa e frases curtas.
+   * Não é resumo do `detalhe`: é a versão que diz o que acontece com VOCÊ.
+   * Toda a interface principal lê este campo; `detalhe` fica no modo avançado.
+   */
+  simples: string;
   /** Pontos descontados do score de segurança (>= 0). */
   pontos: number;
 };

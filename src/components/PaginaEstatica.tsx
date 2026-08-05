@@ -1,3 +1,4 @@
+import AvisoDemonstracao from '@/components/AvisoDemonstracao';
 import Marca from '@/components/Marca';
 import SeletorIdioma from '@/components/SeletorIdioma';
 
@@ -90,6 +91,8 @@ export default function PaginaEstatica({
       </header>
 
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
+        <AvisoDemonstracao />
+
         <div className="mb-10 max-w-3xl">
           <p className="etiqueta mb-3 text-marca">Comparador de passagens</p>
           <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-texto sm:text-5xl">

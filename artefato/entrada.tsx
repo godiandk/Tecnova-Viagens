@@ -4,9 +4,11 @@ import AplicativoBusca, { ErroDeBusca } from '@/components/AplicativoBusca';
 import Marca from '@/components/Marca';
 import PaginaEstatica from '@/components/PaginaEstatica';
 import PainelRevenda from '@/components/PainelRevenda';
+import SeletorIdioma from '@/components/SeletorIdioma';
 import { executarBusca } from '@/lib/busca';
 import { criarProvedorSimulado } from '@/lib/provedores/simulado';
 import { validarParametrosBusca } from '@/lib/validacao';
+import { ProvedorIdioma } from '@/lib/i18n/contexto';
 import type { ParametrosBusca, RespostaBusca } from '@/lib/tipos';
 
 /**
@@ -47,12 +49,15 @@ function Aplicativo() {
         <header className="border-b border-borda bg-superficie">
           <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
             <Marca />
-            <a
+            <div className="flex items-center gap-2">
+              <SeletorIdioma />
+              <a
               href="#busca"
               className="rounded-lg border border-borda px-3 py-1.5 text-sm font-semibold text-suave transition-colors hover:text-marca"
             >
-              Voltar à busca
-            </a>
+                Voltar à busca
+              </a>
+            </div>
           </div>
         </header>
 
@@ -90,4 +95,10 @@ function Aplicativo() {
 }
 
 const elemento = document.getElementById('raiz');
-if (elemento) createRoot(elemento).render(<Aplicativo />);
+if (elemento) {
+  createRoot(elemento).render(
+    <ProvedorIdioma>
+      <Aplicativo />
+    </ProvedorIdioma>,
+  );
+}

@@ -76,20 +76,27 @@ export type Itinerario = {
 
 export type NivelAlerta = 'critico' | 'alto' | 'medio' | 'baixo' | 'info';
 
+/**
+ * Um problema encontrado no itinerário.
+ *
+ * Carrega só o que o motor decidiu — qual problema, quão grave, quanto custa
+ * em pontos — e os valores que a frase precisa. O texto em si vive em
+ * `i18n/textos-alertas.ts`, para poder ser traduzido. Antes as frases saíam
+ * daqui já montadas ("Conexão de 50min em Recife (REC)"), e cada combinação
+ * de aeroporto e horário virava uma frase diferente: impossível de traduzir.
+ */
 export type Alerta = {
+  /** Identidade do problema, estável e independente de idioma. */
   codigo: string;
+  /** Chave em TEXTOS_ALERTA, quando difere do código (singular x plural). */
+  modelo?: string;
   nivel: NivelAlerta;
-  titulo: string;
-  /** Explicação técnica, para quem já conhece o vocabulário de aviação. */
-  detalhe: string;
-  /**
-   * A mesma coisa em palavras do dia a dia, em segunda pessoa e frases curtas.
-   * Não é resumo do `detalhe`: é a versão que diz o que acontece com VOCÊ.
-   * Toda a interface principal lê este campo; `detalhe` fica no modo avançado.
-   */
-  simples: string;
   /** Pontos descontados do score de segurança (>= 0). */
   pontos: number;
+  /** Preenche os marcadores {assim} do texto. */
+  valores?: Record<string, string | number>;
+  /** Único por alerta: dois trechos podem gerar o mesmo código. */
+  chave: string;
 };
 
 export type FaixaSeguranca = 'seguro' | 'aceitavel' | 'arriscado' | 'evitar';

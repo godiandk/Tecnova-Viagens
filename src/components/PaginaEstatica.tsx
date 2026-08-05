@@ -1,4 +1,5 @@
 import Marca from '@/components/Marca';
+import SeletorIdioma from '@/components/SeletorIdioma';
 
 /**
  * Guia de leitura: a página é usada por gente que nunca comprou passagem
@@ -76,12 +77,15 @@ export default function PaginaEstatica({
       <header className="border-b border-borda bg-superficie">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
           <Marca />
-          <a
+          <div className="flex items-center gap-2">
+            <SeletorIdioma />
+            <a
             href={hrefPainel}
             className="rounded-lg border border-borda px-3 py-1.5 text-sm font-semibold text-suave transition-colors hover:text-marca"
           >
-            Painel de revenda
-          </a>
+              Painel de revenda
+            </a>
+          </div>
         </div>
       </header>
 

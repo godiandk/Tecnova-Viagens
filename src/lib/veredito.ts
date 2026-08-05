@@ -1,3 +1,5 @@
+import { textoDoAlerta } from '@/lib/i18n/alerta';
+import type { Traduzir } from '@/lib/i18n/contexto';
 import type { Resultado } from '@/lib/tipos';
 
 /**
@@ -17,48 +19,49 @@ export type Veredito = {
   sinal: 'verde' | 'amarelo' | 'laranja' | 'vermelho';
 };
 
-export function darVeredito(resultado: Resultado): Veredito {
+export function darVeredito(resultado: Resultado, t: Traduzir): Veredito {
   const { seguranca, itinerario } = resultado;
   const separados = itinerario.bilhetes.length > 1;
 
   // O problema que mais pesou é o que explica a nota para quem só lê uma linha.
   const principal = [...seguranca.alertas].sort((a, b) => b.pontos - a.pontos)[0];
+  const tituloPrincipal = principal ? textoDoAlerta(principal, t).titulo : null;
 
   if (seguranca.faixa === 'seguro') {
     return {
-      frase: 'Pode comprar tranquilo',
+      frase: t('Pode comprar tranquilo'),
       porque: separados
-        ? 'Mesmo com mais de um bilhete, as folgas aqui são grandes.'
-        : 'É uma passagem só, com tempo de sobra para tudo. Difícil dar errado.',
+        ? t('Mesmo com mais de um bilhete, as folgas aqui são grandes.')
+        : t('É uma passagem só, com tempo de sobra para tudo. Difícil dar errado.'),
       sinal: 'verde',
     };
   }
 
   if (seguranca.faixa === 'aceitavel') {
     return {
-      frase: 'Dá para comprar, mas se programe',
-      porque: principal
-        ? `Tem um ponto a observar: ${primeiraLetraMinuscula(principal.titulo)}.`
-        : 'Nada grave, só detalhes para conferir antes de fechar.',
+      frase: t('Dá para comprar, mas se programe'),
+      porque: tituloPrincipal
+        ? t('Tem um ponto a observar: {problema}.', { problema: primeiraLetraMinuscula(tituloPrincipal) })
+        : t('Nada grave, só detalhes para conferir antes de fechar.'),
       sinal: 'amarelo',
     };
   }
 
   if (seguranca.faixa === 'arriscado') {
     return {
-      frase: 'Cuidado com essa',
-      porque: principal
-        ? `Um imprevisto comum já derruba a viagem: ${primeiraLetraMinuscula(principal.titulo)}.`
-        : 'Um imprevisto comum já derruba a viagem.',
+      frase: t('Cuidado com essa'),
+      porque: tituloPrincipal
+        ? t('Um imprevisto comum já derruba a viagem: {problema}.', { problema: primeiraLetraMinuscula(tituloPrincipal) })
+        : t('Um imprevisto comum já derruba a viagem.'),
       sinal: 'laranja',
     };
   }
 
   return {
-    frase: 'Melhor não comprar essa',
+    frase: t('Melhor não comprar essa'),
     porque: separados
-      ? 'São bilhetes separados e sem folga: se atrasar, o prejuízo é todo seu.'
-      : 'A chance de dar errado é alta e você fica no prejuízo.',
+      ? t('São bilhetes separados e sem folga: se atrasar, o prejuízo é todo seu.')
+      : t('A chance de dar errado é alta e você fica no prejuízo.'),
     sinal: 'vermelho',
   };
 }

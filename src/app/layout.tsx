@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { ProvedorIdioma } from '@/lib/i18n/contexto';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -18,7 +19,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className="h-full">
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <ProvedorIdioma>{children}</ProvedorIdioma>
+      </body>
     </html>
   );
 }

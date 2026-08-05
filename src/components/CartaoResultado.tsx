@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { textoDoAlerta } from '@/lib/i18n/alerta';
+import { useT, type Traduzir } from '@/lib/i18n/contexto';
 import BagagemDetalhe from '@/components/BagagemDetalhe';
 import DetalheItinerario from '@/components/DetalheItinerario';
 import MedidorSeguranca from '@/components/MedidorSeguranca';
@@ -33,11 +35,12 @@ export default function CartaoResultado({
   /** Presente só na área do operador: guarda o custo real para precificar. */
   aoSalvarCotacao?: (resultado: Resultado) => void;
 }) {
+  const t = useT();
   const [aberto, setAberto] = useState(false);
   const [salvo, setSalvo] = useState(false);
   const { itinerario, seguranca, custo } = resultado;
 
-  const veredito = darVeredito(resultado);
+  const veredito = darVeredito(resultado, t);
   const companhias = [
     ...new Set(itinerario.bilhetes.flatMap((b) => b.segmentos.map((s) => s.companhia))),
   ].map((iata) => buscarCompanhia(iata).nome);
@@ -122,9 +125,9 @@ export default function CartaoResultado({
           {resumo.length > 0 ? (
             <ul className="mt-3 space-y-1.5">
               {resumo.map((alerta) => (
-                <li key={alerta.codigo} className="flex items-start gap-2 text-sm">
+                <li key={alerta.chave} className="flex items-start gap-2 text-sm">
                   <SeloNivel alerta={alerta} />
-                  <span className="text-texto">{alerta.titulo}</span>
+                  <span className="text-texto">{textoDoAlerta(alerta, t).titulo}</span>
                 </li>
               ))}
               {alertas.length > resumo.length && (
@@ -208,7 +211,7 @@ export default function CartaoResultado({
 
             <ul className="space-y-2">
               {alertas.map((alerta) => (
-                <CartaoAlerta key={alerta.codigo} alerta={alerta} />
+                <CartaoAlerta key={alerta.chave} alerta={alerta} t={t} />
               ))}
               {alertas.length === 0 && (
                 <li className="rounded-lg border border-ok/30 bg-ok-suave p-3 text-sm text-ok">
@@ -257,22 +260,23 @@ export default function CartaoResultado({
 }
 
 /** Alerta em linguagem do dia a dia, com o texto técnico guardado atrás de um clique. */
-function CartaoAlerta({ alerta }: { alerta: Alerta }) {
+function CartaoAlerta({ alerta, t }: { alerta: Alerta; t: Traduzir }) {
   const [tecnico, setTecnico] = useState(false);
+  const texto = textoDoAlerta(alerta, t);
 
   return (
     <li className={`rounded-lg border p-3 ${CLASSES_NIVEL[alerta.nivel]}`}>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <span className="flex items-start gap-2 text-sm font-bold">
           <SeloNivel alerta={alerta} />
-          {alerta.titulo}
+          {texto.titulo}
         </span>
         {alerta.pontos > 0 && (
           <span className="dado text-[11px] font-bold">−{alerta.pontos} pontos</span>
         )}
       </div>
 
-      <p className="mt-2 text-sm leading-relaxed opacity-95">{alerta.simples}</p>
+      <p className="mt-2 text-sm leading-relaxed opacity-95">{texto.simples}</p>
 
       <button
         type="button"
@@ -280,10 +284,10 @@ function CartaoAlerta({ alerta }: { alerta: Alerta }) {
         aria-expanded={tecnico}
         className="mt-2 text-xs font-semibold underline underline-offset-2 opacity-80"
       >
-        {tecnico ? 'Ocultar explicação técnica' : 'Explicação técnica'}
+        {tecnico ? t('Ocultar explicação técnica') : t('Explicação técnica')}
       </button>
 
-      {tecnico && <p className="mt-1.5 text-xs leading-relaxed opacity-80">{alerta.detalhe}</p>}
+      {tecnico && <p className="mt-1.5 text-xs leading-relaxed opacity-80">{texto.detalhe}</p>}
     </li>
   );
 }

@@ -4,6 +4,10 @@ import AplicativoBusca, { ErroDeBusca } from '@/components/AplicativoBusca';
 import Marca from '@/components/Marca';
 import PaginaEstatica from '@/components/PaginaEstatica';
 import PainelRevenda from '@/components/PainelRevenda';
+import Conta from '@/components/Conta';
+import PainelAdmin from '@/components/PainelAdmin';
+import PaginaSimples from '@/components/PaginaSimples';
+import { ProvedorConta } from '@/components/ContextoConta';
 import SeletorIdioma from '@/components/SeletorIdioma';
 import { executarBusca } from '@/lib/busca';
 import { criarProvedorSimulado } from '@/lib/provedores/simulado';
@@ -31,17 +35,50 @@ async function buscarLocalmente(parametros: ParametrosBusca): Promise<RespostaBu
  * Sem servidor não há rotas, então a navegação vive no hash da URL. Isso
  * mantém o link compartilhável e faz o botão "voltar" do navegador funcionar.
  */
+type Tela = 'busca' | 'painel' | 'conta' | 'admin';
+
+function telaDoHash(): Tela {
+  const hash = window.location.hash.replace('#', '');
+  return hash === 'painel' || hash === 'conta' || hash === 'admin' ? hash : 'busca';
+}
+
 function Aplicativo() {
   const [tela, setTela] = useState(() =>
-    window.location.hash === '#painel' ? 'painel' : 'busca',
+    telaDoHash(),
   );
 
   useEffect(() => {
     const aoTrocar = () =>
-      setTela(window.location.hash === '#painel' ? 'painel' : 'busca');
+      setTela(telaDoHash());
     window.addEventListener('hashchange', aoTrocar);
     return () => window.removeEventListener('hashchange', aoTrocar);
   }, []);
+
+  if (tela === 'conta') {
+    return (
+      <PaginaSimples
+        etiqueta="Sua conta"
+        titulo="Entrar ou criar conta"
+        resumo="Com conta você guarda as passagens que pesquisou e volta nelas depois, de qualquer aparelho."
+        hrefVoltar="#busca"
+      >
+        <Conta />
+      </PaginaSimples>
+    );
+  }
+
+  if (tela === 'admin') {
+    return (
+      <PaginaSimples
+        etiqueta="Área restrita"
+        titulo="Painel do administrador"
+        resumo="Clientes cadastrados e cotações salvas. Só a conta de administrador enxerga esta página."
+        hrefVoltar="#busca"
+      >
+        <PainelAdmin />
+      </PaginaSimples>
+    );
+  }
 
   if (tela === 'painel') {
     return (
@@ -88,7 +125,7 @@ function Aplicativo() {
   }
 
   return (
-    <PaginaEstatica hrefPainel="#painel">
+    <PaginaEstatica hrefPainel="#painel" hrefConta="#conta" hrefAdmin="#admin">
       <AplicativoBusca aoBuscar={buscarLocalmente} />
     </PaginaEstatica>
   );
@@ -98,7 +135,9 @@ const elemento = document.getElementById('raiz');
 if (elemento) {
   createRoot(elemento).render(
     <ProvedorIdioma>
-      <Aplicativo />
+      <ProvedorConta>
+        <Aplicativo />
+      </ProvedorConta>
     </ProvedorIdioma>,
   );
 }

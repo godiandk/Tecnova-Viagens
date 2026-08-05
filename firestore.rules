@@ -1,0 +1,141 @@
+rules_version = '2';
+
+// ============================================================
+// TECNOVA — regras de segurança do Firestore
+// ------------------------------------------------------------
+// Estas regras são a única coisa que protege a base de dados. O
+// código do site é público: qualquer pessoa o pode ler e chamar o
+// Firebase directamente. Por isso não basta verificar no JavaScript
+// — tem de estar aqui.
+//
+// Este ficheiro cobre os dois sites do mesmo projecto:
+//   TECNOVA Digital  clientes, orcamentos, vouchers, conversas
+//   Tecnova Viagens  viagens_clientes, viagens_cotacoes
+//
+// O prefixo `viagens_` mantém os dois separados sem precisar de
+// dois projectos, duas facturas e duas listas de utilizadores.
+//
+// COMO APLICAR: consola do Firebase > Firestore Database > Rules,
+// colar este conteúdo e Publicar. Sem publicar, as regras antigas
+// continuam a valer e as coleções novas ficam bloqueadas.
+// ============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // O administrador é reconhecido pelo email da conta com que entra.
+    // Tem de ser o mesmo que está em EMAILS_ADMIN no código.
+    function ehAdmin() {
+      return request.auth != null
+          && request.auth.token.email in ['wly.vianna@gmail.com'];
+    }
+
+    function ehDono(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // ==========================================================
+    // TECNOVA Digital
+    // ==========================================================
+
+    match /clientes/{uid} {
+      allow read, write: if ehDono(uid) || ehAdmin();
+    }
+
+    match /orcamentos/{ref} {
+      allow create: if request.resource.data.keys().hasAll(['ref', 'nome', 'tel'])
+                    && request.resource.data.nome is string
+                    && request.resource.data.nome.size() > 1
+                    && request.resource.data.nome.size() < 200
+                    && request.resource.data.tel is string
+                    && request.resource.data.tel.size() < 60
+                    && request.resource.data.estado == 'novo';
+      allow read, update, delete: if ehAdmin();
+    }
+
+    match /vouchers/{codigo} {
+      allow get: if ehAdmin()
+                 || (request.auth != null
+                     && (!('clienteUid' in resource.data)
+                         || resource.data.clienteUid == null
+                         || resource.data.clienteUid == request.auth.uid));
+      allow list: if ehAdmin()
+                  || (request.auth != null
+                      && resource.data.clienteUid == request.auth.uid);
+      allow create, update, delete: if ehAdmin();
+    }
+
+    match /conversas/{uid} {
+      allow read, create, update: if ehDono(uid) || ehAdmin();
+      allow delete: if ehAdmin();
+
+      match /mensagens/{msgId} {
+        allow read, create: if ehDono(uid) || ehAdmin();
+        allow update, delete: if ehAdmin();
+      }
+    }
+
+    // ==========================================================
+    // Tecnova Viagens
+    // ==========================================================
+
+    // ----------------------------------------------------------
+    // viagens_clientes/{uid} — a ficha de quem cria conta no site
+    // de viagens. O documento tem o mesmo id da conta, por isso o
+    // dono é sempre quem lá está.
+    // ----------------------------------------------------------
+    match /viagens_clientes/{uid} {
+      allow read: if ehDono(uid) || ehAdmin();
+
+      // A criação valida o formato aqui, e não só no navegador: quem
+      // chamar o Firebase por fora não passa por validação nenhuma.
+      allow create: if ehDono(uid)
+                    && request.resource.data.nome is string
+                    && request.resource.data.nome.size() > 1
+                    && request.resource.data.nome.size() < 120
+                    && request.resource.data.email == request.auth.token.email;
+
+      // O email não muda por aqui: ele vem da autenticação, e deixar
+      // editá-lo permitiria fingir ser outra pessoa na listagem.
+      allow update: if (ehDono(uid) || ehAdmin())
+                    && request.resource.data.email == resource.data.email;
+
+      allow delete: if ehAdmin();
+    }
+
+    // ----------------------------------------------------------
+    // viagens_cotacoes/{id} — a passagem que alguém guardou para
+    // decidir depois, com o custo real já calculado.
+    //
+    // Cada um lê as suas; o administrador lê todas. A consulta do
+    // painel filtra por clienteUid, e a regra `list` confirma esse
+    // filtro do lado do servidor.
+    // ----------------------------------------------------------
+    match /viagens_cotacoes/{id} {
+      allow get: if ehAdmin()
+                 || (request.auth != null && resource.data.clienteUid == request.auth.uid);
+
+      allow list: if ehAdmin()
+                  || (request.auth != null && resource.data.clienteUid == request.auth.uid);
+
+      // Não se cria cotação em nome de outra pessoa.
+      allow create: if request.auth != null
+                    && request.resource.data.clienteUid == request.auth.uid
+                    && request.resource.data.rota is string
+                    && request.resource.data.rota.size() < 40;
+
+      allow update, delete: if ehAdmin()
+                            || (request.auth != null
+                                && resource.data.clienteUid == request.auth.uid);
+    }
+
+    // ----------------------------------------------------------
+    // Tudo o resto fica fechado. Se um dia acrescentarmos uma
+    // coleção nova, ela não funciona até se escrever a regra —
+    // e isso é de propósito.
+    // ----------------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

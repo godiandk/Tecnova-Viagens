@@ -1,6 +1,7 @@
 import AvisoDemonstracao from '@/components/AvisoDemonstracao';
 import Marca from '@/components/Marca';
 import SeletorIdioma from '@/components/SeletorIdioma';
+import AtalhoConta from '@/components/AtalhoConta';
 
 /**
  * Guia de leitura: a página é usada por gente que nunca comprou passagem
@@ -68,12 +69,16 @@ const GLOSSARIO = [
 export default function PaginaEstatica({
   children,
   hrefPainel = '/painel',
+  hrefConta = '/conta',
+  hrefAdmin = '/admin',
   simulado = true,
   provedor = 'simulado',
 }: {
   children: React.ReactNode;
   /** A versão de página única navega por hash, já que não existem rotas lá. */
   hrefPainel?: string;
+  hrefConta?: string;
+  hrefAdmin?: string;
   /** Falso quando um provedor real está configurado: muda o tom do aviso. */
   simulado?: boolean;
   /** Nome do provedor ativo, para o aviso distinguir teste de produção. */
@@ -86,6 +91,7 @@ export default function PaginaEstatica({
           <Marca />
           <div className="flex items-center gap-2">
             <SeletorIdioma />
+            <AtalhoConta hrefConta={hrefConta} hrefAdmin={hrefAdmin} />
             <a
             href={hrefPainel}
             className="rounded-lg border border-borda px-3 py-1.5 text-sm font-semibold text-suave transition-colors hover:text-marca"

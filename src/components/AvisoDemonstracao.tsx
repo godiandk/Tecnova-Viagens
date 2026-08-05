@@ -14,7 +14,26 @@ const ONDE_COMPRAR = [
   { nome: 'TAP', url: 'https://www.flytap.com/pt-br' },
 ];
 
-export default function AvisoDemonstracao() {
+/**
+ * Com preços reais o texto muda de tom, e isso não é detalhe.
+ *
+ * Um alarme vermelho dizendo "os preços são inventados" em cima de preços
+ * verdadeiros seria pior do que não ter aviso nenhum: ensina a pessoa a passar
+ * o olho por cima de qualquer aviso do site, inclusive os que importam.
+ */
+export default function AvisoDemonstracao({
+  simulado = true,
+  provedor = 'simulado',
+}: {
+  simulado?: boolean;
+  /** Nome do provedor ativo: distingue "inventado" de "real porém defasado". */
+  provedor?: string;
+}) {
+  if (!simulado) return <AvisoPrecosReais />;
+  // Amadeus em ambiente de teste devolve voos que existem com preços velhos:
+  // chamar isso de "inventado" seria tão errado quanto chamar de confiável.
+  if (provedor !== 'simulado') return <AvisoAmbienteDeTeste />;
+
   return (
     <aside
       role="alert"
@@ -65,6 +84,54 @@ export default function AvisoDemonstracao() {
           <strong>mudar a data</strong>.
         </p>
       </div>
+    </aside>
+  );
+}
+
+/**
+ * Versão para quando os preços vêm de um provedor real.
+ *
+ * Continua avisando que a compra acontece em outro lugar — isso não muda com
+ * dado real —, mas em tom de informação e não de alarme, e lembrando que
+ * preço de passagem muda entre a busca e o pagamento.
+ */
+function AvisoPrecosReais() {
+  return (
+    <aside className="mb-8 rounded-2xl border border-marca/30 bg-marca-suave px-4 py-3.5 sm:px-5">
+      <p className="font-bold text-texto">
+        Comparamos e analisamos — a compra é feita no site da companhia
+      </p>
+      <p className="mt-1 text-sm leading-relaxed text-suave">
+        Os preços aqui vêm de uma fonte real, mas mudam a toda hora e não ficam reservados. Ao
+        clicar em comprar você vai para a companhia ou para a agência, e é lá que confere o valor
+        final antes de pagar.
+      </p>
+    </aside>
+  );
+}
+
+/**
+ * Provedor real, mas em ambiente de teste.
+ *
+ * Os voos existem e os horários batem; os preços vêm de uma base congelada e
+ * o inventário é parcial. Serve para conferir se a integração funciona, não
+ * para decidir uma compra.
+ */
+function AvisoAmbienteDeTeste() {
+  return (
+    <aside
+      role="alert"
+      className="mb-8 rounded-2xl border-2 border-atencao/50 bg-atencao-suave px-4 py-3.5 sm:px-5"
+    >
+      <p className="flex items-center gap-2 font-extrabold text-atencao">
+        <span aria-hidden="true">⚠️</span>
+        Preços de teste — não use para comprar
+      </p>
+      <p className="mt-1.5 text-sm leading-relaxed text-texto">
+        Os voos e horários são reais, mas os <strong>preços vêm de uma base de testes</strong> e
+        estão defasados. Nem todas as companhias aparecem. Confira o valor de verdade no site da
+        companhia antes de decidir qualquer coisa.
+      </p>
     </aside>
   );
 }

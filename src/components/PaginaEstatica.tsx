@@ -68,10 +68,16 @@ const GLOSSARIO = [
 export default function PaginaEstatica({
   children,
   hrefPainel = '/painel',
+  simulado = true,
+  provedor = 'simulado',
 }: {
   children: React.ReactNode;
   /** A versão de página única navega por hash, já que não existem rotas lá. */
   hrefPainel?: string;
+  /** Falso quando um provedor real está configurado: muda o tom do aviso. */
+  simulado?: boolean;
+  /** Nome do provedor ativo, para o aviso distinguir teste de produção. */
+  provedor?: string;
 }) {
   return (
     <>
@@ -91,7 +97,7 @@ export default function PaginaEstatica({
       </header>
 
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
-        <AvisoDemonstracao />
+        <AvisoDemonstracao simulado={simulado} provedor={provedor} />
 
         <div className="mb-10 max-w-3xl">
           <p className="etiqueta mb-3 text-marca">Comparador de passagens</p>

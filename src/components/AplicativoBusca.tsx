@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import BalancaPrecoSeguranca from '@/components/BalancaPrecoSeguranca';
 import CartaoResultado from '@/components/CartaoResultado';
+import CentralDeBuscas from '@/components/CentralDeBuscas';
 import FormularioBusca from '@/components/FormularioBusca';
 import { PESO_SEGURANCA_PADRAO } from '@/lib/config';
 import { cotacaoDeResultado, salvarCotacao } from '@/lib/cotacoes';
@@ -222,6 +223,13 @@ export default function AplicativoBusca({
           )}
         </>
       )}
+
+      <CentralDeBuscas
+        origem={parametros.origem}
+        destino={parametros.destino}
+        ida={parametros.ida}
+        volta={parametros.volta}
+      />
     </div>
   );
 }

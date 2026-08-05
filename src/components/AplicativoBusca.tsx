@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import BalancaPrecoSeguranca from '@/components/BalancaPrecoSeguranca';
 import CartaoResultado from '@/components/CartaoResultado';
 import CentralDeBuscas from '@/components/CentralDeBuscas';
+import Destinos from '@/components/Destinos';
 import FormularioBusca from '@/components/FormularioBusca';
 import { PESO_SEGURANCA_PADRAO } from '@/lib/config';
 import { cotacaoDeResultado, salvarCotacao } from '@/lib/cotacoes';
@@ -223,6 +224,8 @@ export default function AplicativoBusca({
           )}
         </>
       )}
+
+      <Destinos />
 
       <CentralDeBuscas
         origem={parametros.origem}

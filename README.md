@@ -22,8 +22,8 @@ npm run dev          # http://localhost:3000
 Funciona sem nenhuma configuração: por padrão usa o provedor **simulado**, que gera ofertas
 plausíveis e determinísticas. Os preços não são reais e a interface avisa isso em destaque.
 
-Para dados reais, copie `.env.example` para `.env.local` e preencha as credenciais da
-[Amadeus Self-Service](https://developers.amadeus.com) (o ambiente `test` é gratuito).
+Para dados reais, copie `.env.example` para `.env.local` e preencha as credenciais de um provedor
+real — veja **[Onde conseguir dados reais](#onde-conseguir-dados-reais)**.
 
 ### Scripts
 
@@ -193,6 +193,8 @@ Coisas que o projeto **não** faz, e que você deve saber antes de confiar nele:
 - **O provedor Amadeus só devolve bilhetes únicos**, então itinerários vindos dele nunca disparam o
   alerta de bilhetes separados. Isso é fiel à realidade: quem vende autoconexão são agregadores que
   montam bilhetes avulsos.
+- **O cadastro gratuito da Amadeus não existe mais** desde 17 de julho de 2026. O adaptador
+  continua no código para quem tiver acesso comercial; para os demais, veja as alternativas acima.
 
 ## Publicar no ar
 
@@ -222,8 +224,26 @@ vista de qualquer visitante, e sua cota seria usada por terceiros.
 ### Vercel — grátis, com servidor
 
 Para tarifas reais, é preciso um servidor que guarde a credencial. Suba o repositório na Vercel,
-configure `AMADEUS_CLIENT_ID` e `AMADEUS_CLIENT_SECRET` nas variáveis de ambiente do projeto e a
-rota `/api/busca` passa a consultar a Amadeus sozinha. Domínio próprio também é suportado.
+configure as credenciais do provedor nas variáveis de ambiente do projeto e a rota `/api/busca`
+passa a consultar a fonte real sozinha. Domínio próprio também é suportado.
+
+## Onde conseguir dados reais
+
+O adaptador incluído é o da Amadeus, mas **o programa Self-Service dela foi desativado em 17 de
+julho de 2026**: developers.amadeus.com passou a oferecer apenas as Enterprise APIs, liberadas
+mediante pedido comercial. O código continua servindo para quem tiver esse acesso — as Enterprise
+APIs usam os mesmos endpoints —, e é inútil para quem não tiver.
+
+Trocar de fonte custa pouco de propósito: o motor de risco não sabe de onde vêm os itinerários, e
+um provedor novo é uma implementação de `ProvedorBusca` (`src/lib/provedores/tipos.ts`).
+
+| Alternativa | Cadastro | O que entrega |
+| --- | --- | --- |
+| **Travelpayouts** | automático | Preços reais e comissão sobre as compras feitas pelos links |
+| **Duffel** | automático, com modo de teste | Preços reais e emissão de bilhete de verdade |
+| **Kiwi.com Tequila** | por aplicação | Preços reais e link de compra |
+
+Confirme na fonte antes de investir tempo: a Amadeus mostrou que esses programas mudam sem aviso.
 
 ## Linguagem simples
 

@@ -28,7 +28,38 @@ const PARAMETROS_INICIAIS: ParametrosBusca = {
   nacionalidade: 'BR',
 };
 
-export default function AplicativoBusca() {
+/** Busca padrão: fala com a API do próprio site. */
+async function buscarPelaApi(parametros: ParametrosBusca): Promise<RespostaBusca> {
+  const requisicao = await fetch('/api/busca', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(parametros),
+  });
+
+  const corpo = await requisicao.json();
+  if (!requisicao.ok) {
+    throw new ErroDeBusca(corpo?.erros ?? ['Não foi possível completar a busca.']);
+  }
+  return corpo as RespostaBusca;
+}
+
+/** Erro que já carrega mensagens prontas para mostrar ao usuário. */
+export class ErroDeBusca extends Error {
+  constructor(public readonly mensagens: string[]) {
+    super(mensagens.join(' '));
+    this.name = 'ErroDeBusca';
+  }
+}
+
+/**
+ * `aoBuscar` existe para a versão do site que roda inteiramente no navegador,
+ * sem servidor: lá a busca é resolvida em memória em vez de virar requisição.
+ */
+export default function AplicativoBusca({
+  aoBuscar = buscarPelaApi,
+}: {
+  aoBuscar?: (parametros: ParametrosBusca) => Promise<RespostaBusca>;
+}) {
   const [parametros, setParametros] = useState<ParametrosBusca>(PARAMETROS_INICIAIS);
   const [resposta, setResposta] = useState<RespostaBusca | null>(null);
   const [erros, setErros] = useState<string[]>([]);
@@ -51,28 +82,19 @@ export default function AplicativoBusca() {
     setErros([]);
 
     try {
-      const requisicao = await fetch('/api/busca', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(parametros),
-      });
-      const corpo = await requisicao.json();
-
-      if (!requisicao.ok) {
-        setErros(corpo?.erros ?? ['Não foi possível completar a busca.']);
-        setResposta(null);
-        return;
-      }
-
-      setResposta(corpo as RespostaBusca);
+      setResposta(await aoBuscar(parametros));
       setTrechoAtivo(0);
-    } catch {
-      setErros(['Falha de conexão. Verifique sua internet e tente de novo.']);
+    } catch (erro) {
+      setErros(
+        erro instanceof ErroDeBusca
+          ? erro.mensagens
+          : ['Falha de conexão. Verifique sua internet e tente de novo.'],
+      );
       setResposta(null);
     } finally {
       setCarregando(false);
     }
-  }, [parametros]);
+  }, [parametros, aoBuscar]);
 
   const trecho = resposta?.trechos[trechoAtivo];
 

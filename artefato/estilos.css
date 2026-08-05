@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+
+/* O CLI do Tailwind precisa saber onde procurar as classes usadas. */
+@source '../src';
+@source '../artefato';
+
+@import '../src/app/tema.css';

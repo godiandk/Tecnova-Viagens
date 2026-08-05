@@ -44,3 +44,6 @@ next-env.d.ts
 
 # build da versão de página única
 /artefato/saida/
+
+# site estático gerado
+/site/

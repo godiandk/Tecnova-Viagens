@@ -194,6 +194,37 @@ Coisas que o projeto **não** faz, e que você deve saber antes de confiar nele:
   alerta de bilhetes separados. Isso é fiel à realidade: quem vende autoconexão são agregadores que
   montam bilhetes avulsos.
 
+## Publicar no ar
+
+O site tem duas formas de rodar, e a escolha depende de você querer preços reais ou não.
+
+### GitHub Pages — grátis, sem servidor
+
+O motor de risco é TypeScript puro, então roda inteiro no navegador. `npm run site` empacota React,
+motor e catálogo de aeroportos num único HTML autocontido em `site/`, e o workflow
+`.github/workflows/publicar-site.yml` publica isso no Pages a cada push no branch padrão.
+
+Para ligar, uma vez só: **Settings → Pages → Source: GitHub Actions**. O endereço fica
+`https://<usuario>.github.io/<repositorio>/`.
+
+Domínio próprio (o GitHub não vende domínio — compre no registrador, `.com.br` é no Registro.br):
+
+1. **Settings → Secrets and variables → Actions → Variables**, crie `DOMINIO` com o endereço
+   (ex.: `tecnovaviagens.com.br`). O build grava o `CNAME` que o Pages exige.
+2. No painel DNS do registrador, aponte o domínio para o GitHub — `ALIAS`/`ANAME` na raiz, ou um
+   `CNAME` para `<usuario>.github.io` no `www`.
+3. **Settings → Pages → Custom domain**, informe o mesmo endereço e marque *Enforce HTTPS*.
+
+**Limite:** o Pages serve arquivo estático. A versão publicada lá usa o provedor **simulado**, e a
+página diz isso em destaque. Não dá para ligar a Amadeus aqui: a credencial iria no JavaScript, à
+vista de qualquer visitante, e sua cota seria usada por terceiros.
+
+### Vercel — grátis, com servidor
+
+Para tarifas reais, é preciso um servidor que guarde a credencial. Suba o repositório na Vercel,
+configure `AMADEUS_CLIENT_ID` e `AMADEUS_CLIENT_SECRET` nas variáveis de ambiente do projeto e a
+rota `/api/busca` passa a consultar a Amadeus sozinha. Domínio próprio também é suportado.
+
 ## Linguagem simples
 
 Cada alerta carrega dois textos: `detalhe`, técnico, e `simples`, escrito em segunda pessoa com

@@ -1,0 +1,66 @@
+name: Publicar site no GitHub Pages
+
+# Publica a versão que roda sem servidor. Os preços exibidos são simulados:
+# buscar tarifa real exige um servidor guardando a credencial da Amadeus, e o
+# Pages só serve arquivo estático.
+
+on:
+  push:
+  # Permite publicar manualmente pela aba Actions, sem precisar de um commit.
+  workflow_dispatch:
+
+# Concede ao job apenas o necessário para publicar.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Uma publicação por vez; um push novo não cancela a que já está no ar.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    # Publica só a partir do branch padrão, seja ele qual for. Consultar o
+    # nome em tempo de execução evita quebrar quando o branch é renomeado.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Publicar um site quebrado é pior do que não publicar.
+      - name: Verificar tipos, lint e testes
+        run: npm run verificar
+
+      - name: Gerar site estático
+        # Defina a variável DOMINIO em Settings > Secrets and variables >
+        # Actions > Variables para usar um domínio próprio. Sem ela, o site
+        # fica no endereço padrão do GitHub Pages.
+        env:
+          DOMINIO: ${{ vars.DOMINIO }}
+        run: npm run site
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  publicar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
